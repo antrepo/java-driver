@@ -19,6 +19,7 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.WriteType;
+import com.datastax.driver.core.exceptions.DriverException;
 
 /**
  * The default retry policy.
@@ -135,6 +136,18 @@ public class DefaultRetryPolicy implements RetryPolicy {
         return (nbRetry == 0)
             ? RetryDecision.tryNextHost(cl)
             : RetryDecision.rethrow();
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation triggers a retry on the next host in the query plan,
+     * regardless of the consistency level, the number of retries or
+     * the possibility that the mutation has been applied server-side.
+     */
+    @Override
+    public RetryDecision onRequestError(Statement statement, ConsistencyLevel cl, DriverException e, int nbRetry) {
+        return RetryDecision.tryNextHost(cl);
     }
 
     @Override

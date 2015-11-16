@@ -19,6 +19,7 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.WriteType;
+import com.datastax.driver.core.exceptions.DriverException;
 
 /**
  * A retry policy that never retry (nor ignore).
@@ -87,6 +88,19 @@ public class FallthroughRetryPolicy implements RetryPolicy {
     public RetryDecision onUnavailable(Statement statement, ConsistencyLevel cl, int requiredReplica, int aliveReplica, int nbRetry) {
         return RetryDecision.rethrow();
     }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation triggers a retry on the next host in the query plan,
+     * regardless of the consistency level, the number of retries or
+     * the possibility that the mutation has been applied server-side.
+     */
+    @Override
+    public RetryDecision onRequestError(Statement statement, ConsistencyLevel cl, DriverException e, int nbRetry) {
+        return RetryDecision.rethrow();
+    }
+
 
     @Override
     public void init(Cluster cluster) {

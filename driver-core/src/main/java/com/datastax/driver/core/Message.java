@@ -244,8 +244,7 @@ abstract class Message {
 
             try {
                 CodecRegistry codecRegistry = ctx.channel().attr(CODEC_REGISTRY_ATTRIBUTE_KEY).get();
-                if (codecRegistry == null)
-                    codecRegistry = CodecRegistry.DEFAULT_INSTANCE;
+                assert codecRegistry != null;
                 Response response = Response.Type.fromOpcode(frame.header.opcode).decoder.decode(frame.body, frame.header.version, codecRegistry);
                 response
                     .setTracingId(tracingId)

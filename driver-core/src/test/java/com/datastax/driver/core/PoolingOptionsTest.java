@@ -45,10 +45,10 @@ public class PoolingOptionsTest {
         PoolingOptions options = new PoolingOptions();
         options.setProtocolVersion(ProtocolVersion.V3);
 
-        assertThat(options.getCoreConnectionsPerHost(LOCAL)).isEqualTo(1);
-        assertThat(options.getMaxConnectionsPerHost(LOCAL)).isEqualTo(1);
+        assertThat(options.getCoreConnectionsPerHost(LOCAL)).isEqualTo(2);
+        assertThat(options.getMaxConnectionsPerHost(LOCAL)).isEqualTo(8);
         assertThat(options.getCoreConnectionsPerHost(REMOTE)).isEqualTo(1);
-        assertThat(options.getMaxConnectionsPerHost(REMOTE)).isEqualTo(1);
+        assertThat(options.getMaxConnectionsPerHost(REMOTE)).isEqualTo(2);
         assertThat(options.getNewConnectionThreshold(LOCAL)).isEqualTo(800);
         assertThat(options.getNewConnectionThreshold(REMOTE)).isEqualTo(200);
         assertThat(options.getMaxRequestsPerConnection(LOCAL)).isEqualTo(1024);
@@ -65,7 +65,7 @@ public class PoolingOptionsTest {
         assertThat(options.getMaxConnectionsPerHost(LOCAL)).isEqualTo(8);
 
         // KO for v3 (default max = 1)
-        options = new PoolingOptions().setCoreConnectionsPerHost(LOCAL, 3);
+        options = new PoolingOptions().setCoreConnectionsPerHost(LOCAL, 9);
         try {
             options.setProtocolVersion(ProtocolVersion.V3);
             fail("Expected an IllegalArgumentException");

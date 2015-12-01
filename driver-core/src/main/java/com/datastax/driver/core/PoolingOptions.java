@@ -65,10 +65,10 @@ public class PoolingOptions {
             .build(),
 
         ProtocolVersion.V3, ImmutableMap.<String, Integer>builder()
-            .put("corePoolLocal", 1)
-            .put("maxPoolLocal", 1)
+            .put("corePoolLocal", 2)
+            .put("maxPoolLocal", 8)
             .put("corePoolRemote", 1)
-            .put("maxPoolRemote", 1)
+            .put("maxPoolRemote", 2)
             .put("newConnectionThresholdLocal", 800)
             .put("newConnectionThresholdRemote", 200)
             .put("maxRequestsPerConnectionLocal", 1024)

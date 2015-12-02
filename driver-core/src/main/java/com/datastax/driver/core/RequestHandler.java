@@ -675,7 +675,7 @@ class RequestHandler {
                         return false;
                     }
                     connection.release();
-                    logError(connection.address, new DriverException("Timeout waiting for response to prepare message"));
+                    logError(connection.address, new OperationTimedOutException(connection.address, "Timeout waiting for response to prepare message"));
                     retry(false, null);
                     return true;
                 }

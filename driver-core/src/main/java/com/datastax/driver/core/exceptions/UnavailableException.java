@@ -105,7 +105,7 @@ public class UnavailableException extends QueryExecutionException implements Coo
     }
 
     @Override
-    public DriverException copy() {
+    public UnavailableException copy() {
         return new UnavailableException(getAddress(), getMessage(), this, consistency, required, alive);
     }
 

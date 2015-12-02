@@ -52,7 +52,7 @@ public class UnresolvedUserTypeException extends DriverException {
     }
 
     @Override
-    public DriverException copy() {
+    public UnresolvedUserTypeException copy() {
         return new UnresolvedUserTypeException(keyspaceName, name, this);
     }
 

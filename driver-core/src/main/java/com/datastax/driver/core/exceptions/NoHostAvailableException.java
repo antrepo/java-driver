@@ -80,7 +80,7 @@ public class NoHostAvailableException extends DriverException {
     }
 
     @Override
-    public DriverException copy() {
+    public NoHostAvailableException copy() {
         return new NoHostAvailableException(getMessage(), this, errors);
     }
 

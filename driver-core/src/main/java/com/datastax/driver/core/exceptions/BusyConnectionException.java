@@ -19,51 +19,37 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 /**
- * Indicates that a query cannot be performed due to the authorization
- * restrictions of the logged user.
+ * Indicates that a connection has run out of stream IDs.
  */
-public class UnauthorizedException extends QueryValidationException implements CoordinatorException {
+public class BusyConnectionException extends DriverException implements CoordinatorException {
 
     private static final long serialVersionUID = 0;
 
     private final InetSocketAddress address;
 
-    /**
-     * @deprecated This constructor is kept for backwards compatibility.
-     */
-    @Deprecated
-    public UnauthorizedException(String msg) {
-        this(null, msg);
-    }
-
-    public UnauthorizedException(InetSocketAddress address, String msg) {
-        super(msg);
+    public BusyConnectionException(InetSocketAddress address) {
+        super(String.format("[%s] Connection has run out of stream IDs", address.getAddress()));
         this.address = address;
     }
 
-    private UnauthorizedException(InetSocketAddress address, String msg, Throwable cause) {
-        super(msg, cause);
+    public BusyConnectionException(InetSocketAddress address, Throwable cause) {
+        super(String.format("[%s] Connection has run out of stream IDs", address.getAddress()), cause);
         this.address = address;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public InetAddress getHost() {
         return address.getAddress();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public InetSocketAddress getAddress() {
         return address;
     }
 
     @Override
-    public UnauthorizedException copy() {
-        return new UnauthorizedException(getAddress(), getMessage(), this);
+    public BusyConnectionException copy() {
+        return new BusyConnectionException(address, this);
     }
+
 }

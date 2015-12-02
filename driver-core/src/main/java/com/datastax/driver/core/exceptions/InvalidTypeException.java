@@ -35,7 +35,7 @@ public class InvalidTypeException extends DriverException {
     }
 
     @Override
-    public DriverException copy() {
+    public InvalidTypeException copy() {
         return new InvalidTypeException(getMessage(), this);
     }
 }

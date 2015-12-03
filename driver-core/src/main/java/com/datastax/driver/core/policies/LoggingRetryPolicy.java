@@ -54,11 +54,11 @@ public class LoggingRetryPolicy implements RetryPolicy {
     @VisibleForTesting static final String RETRYING_ON_UNAVAILABLE =
         "Retrying on unavailable exception on {} at consistency {} (initial consistency: {}, required replica: {}, alive replica: {}, retries: {})";
 
-    @VisibleForTesting static final String IGNORING_UNEXPECTED_ERROR =
-        "Ignoring unexpected error (initial consistency: {}, retries: {})";
+    @VisibleForTesting static final String IGNORING_REQUEST_ERROR =
+        "Ignoring request error (initial consistency: {}, retries: {}, exception: {})";
 
-    @VisibleForTesting static final String RETRYING_ON_UNEXPECTED_ERROR =
-        "Retrying on unexpected error on {} at consistency {} (initial consistency: {}, retries: {})";
+    @VisibleForTesting static final String RETRYING_ON_REQUEST_ERROR =
+        "Retrying on request error on {} at consistency {} (initial consistency: {}, retries: {}, exception: {})";
 
     private final RetryPolicy policy;
 
@@ -127,10 +127,10 @@ public class LoggingRetryPolicy implements RetryPolicy {
         RetryDecision decision = policy.onRequestError(statement, cl, e, nbRetry);
         switch (decision.getType()) {
             case IGNORE:
-                logDecision(IGNORING_UNEXPECTED_ERROR, cl, nbRetry);
+                logDecision(IGNORING_REQUEST_ERROR, cl, nbRetry, e);
                 break;
             case RETRY:
-                logDecision(RETRYING_ON_UNEXPECTED_ERROR, host(decision), cl(cl, decision), cl, nbRetry);
+                logDecision(RETRYING_ON_REQUEST_ERROR, host(decision), cl(cl, decision), cl, nbRetry, e);
                 break;
         }
         return decision;

@@ -28,6 +28,7 @@ import static org.scassandra.http.client.PrimingRequest.Result.write_request_tim
 
 import com.datastax.driver.core.*;
 import com.datastax.driver.core.exceptions.DriverException;
+import com.datastax.driver.core.exceptions.ServerError;
 
 import static com.datastax.driver.core.Assertions.assertThat;
 import static com.datastax.driver.core.ConsistencyLevel.LOCAL_ONE;
@@ -128,21 +129,21 @@ public class LogginRetryPolicyIntegrationTest extends AbstractRetryPolicyIntegra
     }
 
     @Test(groups = "short")
-    public void should_log_ignored_unexpected_error() throws InterruptedException {
+    public void should_log_ignored_request_error() throws InterruptedException {
         simulateError(1, server_error);
         retryDecision = ignore();
         query();
         String line = appender.waitAndGet(5000);
-        assertThat(line.trim()).isEqualTo(expectedMessage(IGNORING_UNEXPECTED_ERROR, defaultCL, 0));
+        assertThat(line.trim()).isEqualTo(expectedMessage(IGNORING_REQUEST_ERROR, defaultCL, 0, new ServerError(host1.getSocketAddress(), "Server Error")));
     }
 
     @Test(groups = "short")
-    public void should_log_retried_unexpected_error() throws InterruptedException {
+    public void should_log_retried_request_error() throws InterruptedException {
         simulateError(1, server_error);
         retryDecision = tryNextHost(LOCAL_ONE);
         query();
         String line = appender.waitAndGet(5000);
-        assertThat(line.trim()).isEqualTo(expectedMessage(RETRYING_ON_UNEXPECTED_ERROR, "next host", LOCAL_ONE, defaultCL, 0));
+        assertThat(line.trim()).isEqualTo(expectedMessage(RETRYING_ON_REQUEST_ERROR, "next host", LOCAL_ONE, defaultCL, 0, new ServerError(host1.getSocketAddress(), "Server Error")));
     }
 
     private String expectedMessage(String template, Object... args) {
